@@ -6,11 +6,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class AccountResponse {
-    private final String customerId;
-    private final String accountId;
-    private final BigDecimal balance;
-    private final String accountNumber;
-    private final String accountHolder;
+    private String customerId;
+    private String accountId;
+    private BigDecimal balance;
+    private String accountNumber;
+    private String accountHolder;
     private List<Transaction> transactions;
 
     public AccountResponse(String customerId, String accountId, BigDecimal balance, String accountNumber, String accountHolder, List<Transaction> transactions) {
@@ -21,6 +21,16 @@ public class AccountResponse {
         this.accountHolder = accountHolder;
         this.transactions = transactions;
     }
+
+    public AccountResponse(String customerId, String accountId, BigDecimal balance, String accountNumber, String accountHolder) {
+        this.customerId = customerId;
+        this.accountId = accountId;
+        this.balance = balance;
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+    }
+
+    public AccountResponse(){}
 
     public String getAccountId() {
         return accountId;

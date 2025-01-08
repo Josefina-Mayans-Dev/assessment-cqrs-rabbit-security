@@ -4,6 +4,7 @@ import ec.com.sofka.transaction.Transaction;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AccountResponseDTO {
@@ -19,7 +20,14 @@ public class AccountResponseDTO {
         this.balance = balance;
         this.accountNumber = accountNumber;
         this.accountHolder = accountHolder;
-        this.transactions = transactions;
+        this.transactions = new ArrayList<>();
+    }
+
+    public AccountResponseDTO(String customerId, BigDecimal balance, String accountNumber, String accountHolder) {
+        this.customerId = customerId;
+        this.balance = balance;
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
     }
 
     public String getCustomerId() {

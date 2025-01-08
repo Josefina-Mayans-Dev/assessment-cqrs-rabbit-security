@@ -5,6 +5,7 @@ import ec.com.sofka.account.values.AccountId;
 import ec.com.sofka.aggregate.events.AccountBalanceUpdated;
 import ec.com.sofka.aggregate.events.AccountCreated;
 import ec.com.sofka.aggregate.customer.values.CustomerId;
+import ec.com.sofka.aggregate.events.AccountUpdated;
 import ec.com.sofka.generics.domain.DomainEvent;
 import ec.com.sofka.generics.utils.AggregateRoot;
 import reactor.core.publisher.Flux;
@@ -46,6 +47,12 @@ public class Customer extends AggregateRoot<CustomerId> {
 
     public void createAccount(BigDecimal accountBalance, String accountNumber, String accountHolder ) {
         addEvent(new AccountCreated(new AccountId().getValue(), accountNumber,accountBalance, accountHolder, new ArrayList<>())).apply();
+
+    }
+
+    public void updateAccount(String accountId, BigDecimal balance, String accountNumber, String accountHolder ) {
+        //Add the event to the aggregate
+        addEvent(new AccountUpdated(accountId, balance, accountNumber, accountHolder,  new ArrayList<>())).apply();
 
     }
 

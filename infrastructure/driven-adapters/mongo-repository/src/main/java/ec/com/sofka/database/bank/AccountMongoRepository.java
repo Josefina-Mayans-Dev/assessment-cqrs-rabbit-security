@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface AccountMongoRepository extends ReactiveMongoRepository<AccountEntity, String> {
     Mono<AccountEntity> findByAccountNumber(String accountNumber);
+    Mono<AccountEntity> findByAccountId(String accountId);
 }

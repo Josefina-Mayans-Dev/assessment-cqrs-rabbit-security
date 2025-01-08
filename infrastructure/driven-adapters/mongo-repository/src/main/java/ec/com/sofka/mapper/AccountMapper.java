@@ -7,8 +7,8 @@ import ec.com.sofka.gateway.dto.AccountDTO;
 public class AccountMapper {
     public static AccountEntity toEntity(AccountDTO accountDTO) {
         return new AccountEntity(accountDTO.getId(),
-                accountDTO.getAccountNumber(),
                 accountDTO.getBalance(),
+                accountDTO.getAccountNumber(),
                 accountDTO.getAccountHolder()
                 );
     }

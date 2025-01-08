@@ -34,6 +34,26 @@ public class AccountAdapter implements AccountRepository {
     }
 
     @Override
+    public Mono<AccountDTO> update(AccountDTO account) {
+        AccountEntity accountEntity = AccountMapper.toEntity(account);
+
+        return repository.findByAccountId(accountEntity.getAccountId())
+                .flatMap(found -> {
+                    AccountEntity updatedEntity = new AccountEntity(
+                            found.getId(),
+                            found.getAccountId(),
+                            account.getAccountNumber(),
+                            found.getBalance(),
+                            account.getAccountHolder()
+
+                    );
+
+                    return repository.save(updatedEntity)
+                            .map(AccountMapper::toDTO);
+                });
+    }
+
+    @Override
     public Flux<AccountDTO> findAll() {
         return repository.findAll().map(AccountMapper::toDTO);
     }

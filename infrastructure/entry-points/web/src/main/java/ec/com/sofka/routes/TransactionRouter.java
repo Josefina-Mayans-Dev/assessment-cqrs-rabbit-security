@@ -94,8 +94,8 @@ public class TransactionRouter {
     public RouterFunction<ServerResponse> transactionRoutes() {
         return RouterFunctions
                 .route(RequestPredicates.POST("/transactions")
-                        .and(accept(MediaType.APPLICATION_JSON)), this::registerTransaction);
-//                .andRoute(RequestPredicates.GET("/transactions/{accountNumber}"), this::getTransactionsByAccount);
+                        .and(accept(MediaType.APPLICATION_JSON)), this::registerTransaction)
+               .andRoute(RequestPredicates.GET("/transactions/{accountNumber}"), this::getTransactionsByAccount);
     }
 
     public Mono<ServerResponse> registerTransaction(ServerRequest request){
@@ -107,7 +107,7 @@ public class TransactionRouter {
                         .bodyValue(transactionResponseDTO));
     }
 
-    /*public Mono<ServerResponse> getTransactionsByAccount(ServerRequest request){
+    public Mono<ServerResponse> getTransactionsByAccount(ServerRequest request){
         String accountNumber = request.pathVariable("accountNumber");
         return transactionHandler.getTransactionsByAccount(accountNumber)
                 .switchIfEmpty(Mono.error (new AccountNotFoundException("Account not found")))
@@ -118,5 +118,5 @@ public class TransactionRouter {
                         .bodyValue(transactionResponseDTO)
                         
                 );
-    }*/
+    }
 }

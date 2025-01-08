@@ -88,8 +88,9 @@ public class AccountRouter {
     })
     public RouterFunction<ServerResponse> accountRoutes(){
         return RouterFunctions
-                .route(RequestPredicates.POST("/accounts").and(accept(MediaType.APPLICATION_JSON)), this::createAccount);
-//                .andRoute(RequestPredicates.GET("/accounts"), this::getAllAccounts);
+                .route(RequestPredicates.POST("/accounts").and(accept(MediaType.APPLICATION_JSON)), this::createAccount)
+                .andRoute(RequestPredicates.GET("/accounts"), this::getAllAccounts)
+                .andRoute(RequestPredicates.PUT("/accounts").and(accept(MediaType.APPLICATION_JSON)), this::updateAccount);
     }
 
     public Mono<ServerResponse> createAccount(ServerRequest request) {
@@ -101,7 +102,7 @@ public class AccountRouter {
                         .bodyValue(accountResponseDTO));
     }
 
-    /*public Mono<ServerResponse> getAllAccounts(ServerRequest request){
+    public Mono<ServerResponse> getAllAccounts(ServerRequest request){
 
         return accountHandler.getAllAccounts()
                 .collectList()
@@ -110,6 +111,22 @@ public class AccountRouter {
                                 ServerResponse.status(HttpStatus.NOT_FOUND).build()
                                 : ServerResponse.ok().body(Flux.fromIterable(accountList), AccountResponseDTO.class)
                 );
-    }*/
+    }
+
+    public Mono<ServerResponse> updateAccount(ServerRequest request) {
+        return request.bodyToMono(AccountRequestDTO.class)
+                .flatMap(requestDTO ->
+                        accountHandler.updateAccount(requestDTO)
+                                .flatMap(response ->
+                                        ServerResponse.ok()
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .bodyValue(response)
+                                )
+                )
+                .onErrorResume(e ->
+                        ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .bodyValue("Error occurred while updating account")
+                );
+    }
 
 }

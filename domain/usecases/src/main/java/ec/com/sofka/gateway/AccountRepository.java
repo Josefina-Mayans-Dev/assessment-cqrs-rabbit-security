@@ -8,5 +8,6 @@ import reactor.core.publisher.Mono;
 public interface AccountRepository {
     Mono<AccountDTO> findByAccountNumber(String accountNumber);
     Mono<AccountDTO> save(AccountDTO account);
+    Mono<AccountDTO> update(AccountDTO account);
     Flux<AccountDTO> findAll();
 }

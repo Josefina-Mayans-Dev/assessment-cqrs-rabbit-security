@@ -11,6 +11,9 @@ public class AccountEntity {
     @Id
     private String id;
 
+    @Field("account_id")
+    private String accountId;
+
     @Field("account_number")
     private String accountNumber;
 
@@ -25,14 +28,16 @@ public class AccountEntity {
     }
 
 
-    public AccountEntity(BigDecimal balance, String accountHolder, String accountNumber) {
+    public AccountEntity(String accountId, BigDecimal balance, String accountHolder, String accountNumber) {
+       this.accountId = accountId;
         this.balance = balance;
         this.accountHolder = accountHolder;
         this.accountNumber = accountNumber;
     }
 
-    public AccountEntity(String id, String accountNumber, BigDecimal balance, String accountHolder) {
+    public AccountEntity(String id, String accountId, String accountNumber, BigDecimal balance, String accountHolder) {
         this.id = id;
+        this.accountId = accountId;
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.accountHolder = accountHolder;
@@ -42,7 +47,9 @@ public class AccountEntity {
         return id;
     }
 
-
+    public String getAccountId() {
+        return accountId;
+    }
 
     public String getAccountNumber() {
         return accountNumber;
