@@ -1,34 +1,36 @@
 package ec.com.sofka.account;
 
 import ec.com.sofka.account.values.AccountId;
-import ec.com.sofka.account.values.objects.Balance;
-import ec.com.sofka.account.values.objects.Name;
-import ec.com.sofka.account.values.objects.NumberAcc;
+import ec.com.sofka.account.values.objects.*;
+import ec.com.sofka.account.values.objects.AccountNumber;
 import ec.com.sofka.generics.utils.Entity;
 
-//4. Creation of an Entity class - They have logic and behavior, otherwise is a ValueObject.
+
 public class Account extends Entity<AccountId> {
     private final Balance balance;
-    private final NumberAcc numberAcc;
-    private final Name name;
+    private final AccountNumber accountNumber;
+    private final AccountHolder accountHolder;
+    private Transactions transactions;
 
-    public Account(AccountId id, Balance balance, NumberAcc numberAcc, Name name) {
+    public Account(AccountId id, Balance balance, AccountNumber accountNumber, AccountHolder accountHolder, Transactions transactions) {
         super(id);
         this.balance = balance;
-        this.numberAcc = numberAcc;
-        this.name = name;
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+        this.transactions = transactions;
     }
 
     public Balance getBalance() {
         return balance;
     }
 
-    public NumberAcc getNumber() {
-        return numberAcc;
+    public AccountNumber getAccountNumber() {
+        return accountNumber;
     }
-    public Name getName() {
-        return name;
+    public AccountHolder getAccountHolder() {
+        return accountHolder;
     }
+    public Transactions getTransactions(){ return transactions;}
 
 
 }

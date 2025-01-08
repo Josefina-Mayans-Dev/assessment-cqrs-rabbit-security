@@ -15,6 +15,15 @@ public abstract class DomainEvent {
 
     private Long version;
 
+    public DomainEvent(Instant when, String eventId, String eventType, String aggregateRootId, String aggregateRootName, Long version) {
+        this.when = when;
+        this.eventId = eventId;
+        this.eventType = eventType;
+        this.aggregateRootId = aggregateRootId;
+        this.aggregateRootName = aggregateRootName;
+        this.version = version;
+    }
+
     public DomainEvent(String eventType) {
         this.when = Instant.now();
         this.eventId = UUID.randomUUID().toString();
