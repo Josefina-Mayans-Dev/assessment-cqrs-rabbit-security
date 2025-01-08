@@ -24,7 +24,7 @@ public class TransactionResponseDTO {
     private String customerId;
 
 
-    public TransactionResponseDTO(String actionId, BigDecimal fee, BigDecimal amount, TransactionTypes transactionTypes, LocalDateTime date, String description, String customerId) {
+    public TransactionResponseDTO(String actionId, BigDecimal amount, BigDecimal fee, TransactionTypes transactionTypes, LocalDateTime date, String customerId, String description ) {
         this.actionId = actionId;
         this.fee = fee;
         this.amount = amount;

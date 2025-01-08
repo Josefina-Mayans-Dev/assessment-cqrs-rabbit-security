@@ -1,6 +1,7 @@
 package ec.com.sofka.routes;
 
 
+import ec.com.sofka.appservice.transaction.request.GetTransactionsByAccountNumberRequest;
 import ec.com.sofka.data.TransactionRequestDTO;
 import ec.com.sofka.data.TransactionResponseDTO;
 import ec.com.sofka.exceptions.AccountNotFoundException;
@@ -95,7 +96,7 @@ public class TransactionRouter {
         return RouterFunctions
                 .route(RequestPredicates.POST("/transactions")
                         .and(accept(MediaType.APPLICATION_JSON)), this::registerTransaction)
-               .andRoute(RequestPredicates.GET("/transactions/{accountNumber}"), this::getTransactionsByAccount);
+               .andRoute(RequestPredicates.POST("/transactions/account"), this::getTransactionsByAccount);
     }
 
     public Mono<ServerResponse> registerTransaction(ServerRequest request){
@@ -104,13 +105,19 @@ public class TransactionRouter {
                 .flatMap(transactionResponseDTO -> ServerResponse
                         .status(HttpStatus.CREATED)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(transactionResponseDTO));
+                        .bodyValue(transactionResponseDTO))
+        .onErrorResume(e ->
+                ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .bodyValue("Error occurred while trying to create transaction")
+        );
     }
 
     public Mono<ServerResponse> getTransactionsByAccount(ServerRequest request){
-        String accountNumber = request.pathVariable("accountNumber");
-        return transactionHandler.getTransactionsByAccount(accountNumber)
-                .switchIfEmpty(Mono.error (new AccountNotFoundException("Account not found")))
+       return request.bodyToMono(TransactionRequestDTO.class)
+               .flatMapMany(transactionHandler::getTransactionsByAccount)
+        //String accountNumber = request.pathVariable("accountNumber");
+        //return transactionHandler.getTransactionsByAccount(accountNumber)
+                .switchIfEmpty(Mono.error (new AccountNotFoundException("No transactions found")))
                 .collectList()
                 .flatMap(transactionResponseDTO -> ServerResponse
                         .status(HttpStatus.OK)

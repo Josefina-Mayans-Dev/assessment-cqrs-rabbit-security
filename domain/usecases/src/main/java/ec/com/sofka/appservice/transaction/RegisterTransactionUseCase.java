@@ -72,8 +72,8 @@ public class RegisterTransactionUseCase implements IUseCaseExecute<RegisterTrans
                                     accountDTO.getId()
                             );
 
-                            Log log = new Log("New transaction was registered for account: " + account.getAccountNumber().getValue(), "transaction", null);
-                            busMessage.sendMsg(log);
+                        /*    Log log = new Log("New transaction was registered for account: " + account.getAccountNumber().getValue(), "transaction", null);
+                            busMessage.sendMsg(log);*/
 
 
                             return transactionRepository.save(new TransactionDTO(

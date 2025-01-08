@@ -85,6 +85,28 @@ public class AccountRouter {
                             }
                     )
             ),
+            @RouterOperation(
+                    path = "/accounts",
+                    method = RequestMethod.PUT,
+                    operation = @Operation(
+                            tags = {"Accounts"},
+                            operationId = "update",
+                            summary = "Updates a specific account",
+                            description = "Updates account with their respective details",
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "Account updated successfully",
+                                            content = @Content(mediaType = "application/json")
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "204",
+                                            description = "No content found",
+                                            content = @Content(mediaType = "application/json")
+                                    )
+                            }
+                    )
+            ),
     })
     public RouterFunction<ServerResponse> accountRoutes(){
         return RouterFunctions
