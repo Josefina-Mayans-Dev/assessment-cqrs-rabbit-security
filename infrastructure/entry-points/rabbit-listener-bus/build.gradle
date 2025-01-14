@@ -4,6 +4,18 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-amqp')
 
     implementation project(':usecases')
-    implementation project(':rabbit-properties')
     implementation project(':model')
+    implementation project(':shared')
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+
 }

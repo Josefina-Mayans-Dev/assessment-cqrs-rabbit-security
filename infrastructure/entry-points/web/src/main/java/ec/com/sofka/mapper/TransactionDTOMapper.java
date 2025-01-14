@@ -1,7 +1,7 @@
 package ec.com.sofka.mapper;
 
-import ec.com.sofka.appservice.transaction.request.RegisterTransactionRequest;
-import ec.com.sofka.appservice.transaction.responses.TransactionResponse;
+import ec.com.sofka.appservice.transaction.commands.RegisterTransactionCommand;
+import ec.com.sofka.appservice.transaction.queries.responses.TransactionResponse;
 import ec.com.sofka.data.TransactionRequestDTO;
 import ec.com.sofka.data.TransactionResponseDTO;
 
@@ -18,8 +18,8 @@ public class TransactionDTOMapper {
         );
     }
 
-    public static RegisterTransactionRequest toEntity(TransactionRequestDTO transactionRequestDTO) {
-        return new RegisterTransactionRequest(
+    public static RegisterTransactionCommand toEntity(TransactionRequestDTO transactionRequestDTO) {
+        return new RegisterTransactionCommand(
                 transactionRequestDTO.getAmount(),
                 transactionRequestDTO.getTransactionTypes(),
                 transactionRequestDTO.getAccountNumber(),

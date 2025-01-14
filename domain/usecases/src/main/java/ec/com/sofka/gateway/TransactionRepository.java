@@ -9,5 +9,6 @@ import reactor.core.publisher.Mono;
 public interface TransactionRepository {
     Flux<TransactionDTO> findAll();
     Mono<TransactionDTO> save(TransactionDTO transaction);
-    Flux<TransactionDTO> findByAccountNumber(String accountNumber);
+  //  Flux<TransactionDTO> findByAccountNumber(String accountNumber);
+    Flux<TransactionDTO> getAllByAccountId(String accountId);
 }

@@ -1,7 +1,9 @@
 package ec.com.sofka.routes;
 
 
-import ec.com.sofka.appservice.transaction.request.GetTransactionsByAccountNumberRequest;
+import ec.com.sofka.appservice.account.queries.query.GetAccountQuery;
+import ec.com.sofka.appservice.transaction.queries.query.GetTransactionsByAccountNumberQuery;
+import ec.com.sofka.data.AccountResponseDTO;
 import ec.com.sofka.data.TransactionRequestDTO;
 import ec.com.sofka.data.TransactionResponseDTO;
 import ec.com.sofka.exceptions.AccountNotFoundException;
@@ -19,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
@@ -113,7 +116,7 @@ public class TransactionRouter {
     }
 
     public Mono<ServerResponse> getTransactionsByAccount(ServerRequest request){
-       return request.bodyToMono(TransactionRequestDTO.class)
+       return request.bodyToMono(GetTransactionsByAccountNumberQuery.class)
                .flatMapMany(transactionHandler::getTransactionsByAccount)
         //String accountNumber = request.pathVariable("accountNumber");
         //return transactionHandler.getTransactionsByAccount(accountNumber)
@@ -126,4 +129,16 @@ public class TransactionRouter {
                         
                 );
     }
+
+   /* public Mono<ServerResponse> getTransactionsByAccount(ServerRequest request){
+        GetTransactionsByAccountNumberQuery query = new GetTransactionsByAccountNumberQuery("", "");
+
+        return transactionHandler.getTransactionsByAccount(query)
+                .collectList()
+                .flatMap(accountList ->
+                        accountList.isEmpty() ?
+                                ServerResponse.status(HttpStatus.NOT_FOUND).build()
+                                : ServerResponse.ok().body(Flux.fromIterable(accountList), AccountResponseDTO.class)
+                );
+    }*/
 }

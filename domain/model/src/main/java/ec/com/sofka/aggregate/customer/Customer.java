@@ -51,7 +51,6 @@ public class Customer extends AggregateRoot<CustomerId> {
     }
 
     public void updateAccount(String accountId, BigDecimal balance, String accountNumber, String accountHolder ) {
-        //Add the event to the aggregate
         addEvent(new AccountUpdated(accountId, balance, accountNumber, accountHolder,  new ArrayList<>())).apply();
 
     }

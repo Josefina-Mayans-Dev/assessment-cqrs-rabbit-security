@@ -2,50 +2,47 @@ package ec.com.sofka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ec.com.sofka.gateway.BusMessage;
-import ec.com.sofka.log.Log;
+import ec.com.sofka.gateway.BusEvent;
+import ec.com.sofka.generics.domain.DomainEvent;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
 
 @Service
-public class BusAdapter implements BusMessage {
+public class BusAdapter implements BusEvent {
 
     private final RabbitTemplate rabbitTemplate;
-    private final RabbitEnvProps envProperties;
+    private final RabbitEnvProps rabbitEnvProps;
 
-    public BusAdapter(RabbitTemplate rabbitTemplate, RabbitEnvProps envProperties) {
+    public BusAdapter(RabbitTemplate rabbitTemplate, RabbitEnvProps rabbitEnvProps) {
         this.rabbitTemplate = rabbitTemplate;
-        this.envProperties = envProperties;
+        this.rabbitEnvProps = rabbitEnvProps;
     }
 
     @Override
-    public void sendMsg(Log log) {
-        String exchange = switch (log.getEntity()) {
-            case "account" -> envProperties.getAccountExchange();
-            case "transaction" -> envProperties.getTransactionExchange();
-            default -> throw new IllegalArgumentException("Invalid entity type: " + log.getEntity());
-        };
+    public void sendEventAccountCreated(Mono<DomainEvent> event) {
+        event.subscribe(accountCreated -> {
+                    rabbitTemplate.convertAndSend(rabbitEnvProps.getAccountExchange(), rabbitEnvProps.getAccountRoutingKey(), accountCreated);
+                }
+        );
+    }
 
-        String routingKey = switch (log.getEntity()) {
-            case "account" -> envProperties.getAccountRoutingKey();
-            case "transaction" -> envProperties.getTransactionRoutingKey();
-            default -> throw new IllegalArgumentException("Invalid entity type: " + log.getEntity());
-        };
+    @Override
+    public void sendEventTransactionRegistered(Mono<DomainEvent> event) {
+        event.subscribe(transactionRegistered -> {
+            rabbitTemplate.convertAndSend(rabbitEnvProps.getTransactionExchange(), rabbitEnvProps.getTransactionRoutingKey(), transactionRegistered);
+        });
+    }
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            String payload = mapper.writeValueAsString(Map.of(
-                    "entity", log.getEntity(),
-                    "message", log.getMessage()
-            ));
-            rabbitTemplate.convertAndSend(exchange, routingKey, payload);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error creating payload", e);
-        }
+    @Override
+    public void sendEventAccountUpdated(Mono<DomainEvent> event) {
+        event.subscribe(accountUpdated -> {
+                    rabbitTemplate.convertAndSend(rabbitEnvProps.getAccountUpdatedExchange(), rabbitEnvProps.getAccountUpdatedRoutingKey(), accountUpdated);
+                }
+        );
     }
 
 }

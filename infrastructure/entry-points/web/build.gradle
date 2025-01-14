@@ -5,6 +5,7 @@ dependencies {
     implementation project(':usecases')
     implementation project(':model')
     implementation project(":mongo-repository")
+    implementation project(':exception')
 
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -17,6 +18,16 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.11.4'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.14.2'
+
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework:spring-webflux'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 tasks.named('test') {
     useJUnitPlatform()

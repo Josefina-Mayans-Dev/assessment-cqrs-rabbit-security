@@ -20,6 +20,13 @@ public class Account extends Entity<AccountId> {
         this.transactions = transactions;
     }
 
+    public Account(AccountId id, Balance balance, AccountNumber accountNumber, AccountHolder accountHolder) {
+        super(id);
+        this.balance = balance;
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+    }
+
     public Balance getBalance() {
         return balance;
     }

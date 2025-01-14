@@ -1,10 +1,11 @@
 package ec.com.sofka.handlers;
 
-import ec.com.sofka.appservice.transaction.GetTransactionsByAccountNumberUseCase;
-import ec.com.sofka.appservice.transaction.RegisterTransactionUseCase;
-import ec.com.sofka.appservice.transaction.request.GetTransactionsByAccountNumberRequest;
-import ec.com.sofka.appservice.transaction.request.RegisterTransactionRequest;
-import ec.com.sofka.appservice.transaction.responses.TransactionResponse;
+import ec.com.sofka.appservice.account.queries.query.GetAccountQuery;
+import ec.com.sofka.appservice.transaction.commands.usecases.RegisterTransactionUseCase;
+import ec.com.sofka.appservice.transaction.queries.query.GetTransactionsByAccountNumberQuery;
+import ec.com.sofka.appservice.transaction.queries.usecases.GetTransactionsByAccountNumberUseCase;
+import ec.com.sofka.appservice.transaction.commands.RegisterTransactionCommand;
+import ec.com.sofka.data.AccountResponseDTO;
 import ec.com.sofka.data.TransactionRequestDTO;
 import ec.com.sofka.data.TransactionResponseDTO;
 import ec.com.sofka.mapper.AccountDTOMapper;
@@ -42,13 +43,13 @@ public class TransactionHandler {
                         response.getDescription()));
     }
 
-    public Flux<TransactionResponseDTO> getTransactionsByAccount (TransactionRequestDTO request){
-        GetTransactionsByAccountNumberRequest command = new GetTransactionsByAccountNumberRequest(
+   /* public Flux<TransactionResponseDTO> getTransactionsByAccount (TransactionRequestDTO request){
+        GetTransactionsByAccountNumberQuery command = new GetTransactionsByAccountNumberQuery(
                 request.getCustomerId(),
                 request.getAccountNumber()
         );
 
-        return getTransactionsByAccountNumberUseCase.execute(command)
+        return getTransactionsByAccountNumberUseCase.get(command)
                 .map(transactionResponse -> new TransactionResponseDTO(
                         transactionResponse.getActionId(),
                         transactionResponse.getAmount(),
@@ -58,5 +59,30 @@ public class TransactionHandler {
                         transactionResponse.getDescription(),
                         transactionResponse.getCustomerId()
                 ));
+    }*/
+
+    public Flux<TransactionResponseDTO> getTransactionsByAccount(GetTransactionsByAccountNumberQuery query) {
+
+        return getTransactionsByAccountNumberUseCase.get(query)  // Obtén la respuesta reactiva
+                .flatMapMany(queryResponse -> {
+                    return Flux.fromIterable(queryResponse.getMultipleResults() )
+                            .map(TransactionDTOMapper::fromEntity);  // Transformar el dominio a DTO
+                });
+
     }
+
+
+    /*public Mono<TransactionResponseDTO> getTransactionsByAccount(TransactionRequestDTO request) {
+        GetTransactionsByAccountNumberQuery command = new GetTransactionsByAccountNumberQuery(request.getCustomerId(), request.getAccountNumber());
+
+        return getTransactionsByAccountNumberUseCase.get(command)
+                .flatMap(queryResponse ->
+                        Mono.justOrEmpty(queryResponse.getSingleResult()) // Acceder al TransactionResponse
+                                .flatMap(transactionResponse ->
+                                        getAccountByIdUseCase.get(new GetByElementQuery(transactionResponse.getCustomerId(),
+                                                        transactionResponse.getAccountId()))
+                                                .map(accountResponse -> TransactionDTOMapper.fromEntity(transactionResponse))
+                                )
+                );
+    }*/
 }

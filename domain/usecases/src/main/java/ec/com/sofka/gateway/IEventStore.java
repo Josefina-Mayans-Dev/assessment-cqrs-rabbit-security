@@ -10,5 +10,7 @@ import java.util.List;
 public interface IEventStore {
     Mono<DomainEvent> save(DomainEvent event);
     Flux<DomainEvent> findAggregate(String aggregateId, String aggregate);
+    Flux<DomainEvent> findAllAggregatesBy(String aggregate);
     Flux<DomainEvent> findAllAggregates();
+    Flux<DomainEvent> findAggregateforUpdate(String aggregateId);
 }

@@ -27,5 +27,14 @@ findProject(':app-logs').projectDir = file('./applications/app-logs')
 include ':rabbit-listener-bus'
 findProject(':rabbit-listener-bus').projectDir = file('./infrastructure/entry-points/rabbit-listener-bus')
 
-include ':rabbit-properties'
-findProject(':rabbit-properties').projectDir = file('./shared/rabbit-properties')
+include ':shared'
+findProject(':shared').projectDir = file('./shared')
+
+include ':security'
+findProject(':security').projectDir = file('./infrastructure/security')
+
+include ':web-security'
+findProject(':web-security').projectDir = file('./infrastructure/entry-points/web-security')
+
+include ':exception'
+findProject(':exception').projectDir = file('./domain/exception')

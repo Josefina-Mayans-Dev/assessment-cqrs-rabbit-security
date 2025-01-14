@@ -33,6 +33,8 @@ public class EventEntity {
     @Field("aggregate_root_name")
     private String aggregateRootName;
 
+    public EventEntity(){}
+
     public EventEntity(String id, String aggregateId, String eventType, String eventData, String timestamp, Long version, String aggregateRootName) {
         this.id = id;
         this.aggregateId = aggregateId;

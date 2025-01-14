@@ -37,13 +37,12 @@ public class AccountAdapter implements AccountRepository {
     public Mono<AccountDTO> update(AccountDTO account) {
         AccountEntity accountEntity = AccountMapper.toEntity(account);
 
-        return repository.findByAccountId(accountEntity.getAccountId())
+        return repository.findById(accountEntity.getId())
                 .flatMap(found -> {
                     AccountEntity updatedEntity = new AccountEntity(
                             found.getId(),
-                            found.getAccountId(),
+                            account.getBalance(),
                             account.getAccountNumber(),
-                            found.getBalance(),
                             account.getAccountHolder()
 
                     );

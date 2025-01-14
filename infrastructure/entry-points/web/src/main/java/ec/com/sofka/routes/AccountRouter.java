@@ -1,5 +1,6 @@
 package ec.com.sofka.routes;
 
+import ec.com.sofka.appservice.account.queries.query.GetAccountQuery;
 import ec.com.sofka.data.AccountRequestDTO;
 import ec.com.sofka.data.AccountResponseDTO;
 import ec.com.sofka.handlers.AccountHandler;
@@ -34,7 +35,7 @@ public class AccountRouter {
     @Bean
     @RouterOperations({
             @RouterOperation(
-                    path = "/accounts",
+                    path = "/accounts/create",
                     method = RequestMethod.POST,
                     operation = @Operation(
                             tags = {"Accounts"},
@@ -110,7 +111,7 @@ public class AccountRouter {
     })
     public RouterFunction<ServerResponse> accountRoutes(){
         return RouterFunctions
-                .route(RequestPredicates.POST("/accounts").and(accept(MediaType.APPLICATION_JSON)), this::createAccount)
+                .route(RequestPredicates.POST("/accounts/create").and(accept(MediaType.APPLICATION_JSON)), this::createAccount)
                 .andRoute(RequestPredicates.GET("/accounts"), this::getAllAccounts)
                 .andRoute(RequestPredicates.PUT("/accounts").and(accept(MediaType.APPLICATION_JSON)), this::updateAccount);
     }
@@ -125,8 +126,9 @@ public class AccountRouter {
     }
 
     public Mono<ServerResponse> getAllAccounts(ServerRequest request){
+        GetAccountQuery query = new GetAccountQuery();
 
-        return accountHandler.getAllAccounts()
+        return accountHandler.getAllAccounts(query)
                 .collectList()
                 .flatMap(accountList ->
                         accountList.isEmpty() ?

@@ -1,10 +1,11 @@
 package ec.com.sofka.handlers;
 
-import ec.com.sofka.appservice.account.CreateAccountUseCase;
-import ec.com.sofka.appservice.account.GetAllAccountsUseCase;
-import ec.com.sofka.appservice.account.UpdateAccountUseCase;
-import ec.com.sofka.appservice.account.request.CreateAccountRequest;
-import ec.com.sofka.appservice.account.request.UpdateAccountRequest;
+import ec.com.sofka.appservice.account.commands.usecases.CreateAccountUseCase;
+import ec.com.sofka.appservice.account.queries.query.GetAccountQuery;
+import ec.com.sofka.appservice.account.queries.usecases.GetAllAccountsUseCase;
+import ec.com.sofka.appservice.account.commands.usecases.UpdateAccountUseCase;
+import ec.com.sofka.appservice.account.commands.CreateAccountCommand;
+import ec.com.sofka.appservice.account.commands.UpdateAccountCommand;
 import ec.com.sofka.data.AccountRequestDTO;
 import ec.com.sofka.data.AccountResponseDTO;
 import ec.com.sofka.mapper.AccountDTOMapper;
@@ -26,9 +27,8 @@ public class AccountHandler {
     }
 
     public Mono<AccountResponseDTO> createAccount(AccountRequestDTO request) {
-        // Ejecutar el caso de uso y mapear la respuesta a un ResponseDTO
         return createAccountUseCase.execute(
-                        new CreateAccountRequest(
+                        new CreateAccountCommand(
                                 request.getCustomerId(),
                                 request.getBalance(),
                                 request.getAccountNumber(),
@@ -42,16 +42,20 @@ public class AccountHandler {
                         response.getTransactions()));
     }
 
-    public Flux<AccountResponseDTO> getAllAccounts() {
+    public Flux<AccountResponseDTO> getAllAccounts(GetAccountQuery query) {
 
-        return getAllAccountsUseCase.get().map(AccountDTOMapper::fromEntity);
+        return getAllAccountsUseCase.get(query)  // Obtén la respuesta reactiva
+                .flatMapMany(queryResponse -> {
+                    return Flux.fromIterable(queryResponse.getMultipleResults() )
+                            .map(AccountDTOMapper::fromEntity);  // Transformar el dominio a DTO
+                });
 
     }
 
 
-    public Mono<AccountResponseDTO> updateAccount(AccountRequestDTO request){
+    /*public Mono<AccountResponseDTO> updateAccount(AccountRequestDTO request){
         return updateAccountUseCase.execute(
-                        new UpdateAccountRequest(
+                        new UpdateAccountCommand(
                                 request.getCustomerId(),
                                 request.getBalance(),
                                 request.getAccountNumber(),
@@ -64,6 +68,12 @@ public class AccountHandler {
                         response.getAccountNumber(),
                         response.getTransactions()
                 ));
+    }*/
+
+    public Mono<AccountResponseDTO> updateAccount(AccountRequestDTO request) {
+        return updateAccountUseCase.execute(AccountDTOMapper.accountRequestDTOtoUpdateAccountCommand(request))
+                .map(AccountDTOMapper::updateAccountResponseToAccountResponse)
+                .map(AccountDTOMapper::fromEntity);
     }
 
 }
